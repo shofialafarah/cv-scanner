@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('cv_file');
-            $table->jsonb('parse_data')->nullable();
+            $table->jsonb('parsed_data')->nullable();
             $table->integer('score')->nullable();
             $table->timestamps();
         });
