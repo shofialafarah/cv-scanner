@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->string('cv_file');
-            $table->jsonb('parsed_data')->nullable();
+            $table->jsonb('skills')->nullable();
             $table->integer('score')->nullable();
+            $table->text('ai_summary')->nullable();
+            $table->jsonb('parsed_data')->nullable();
             $table->timestamps();
         });
     }

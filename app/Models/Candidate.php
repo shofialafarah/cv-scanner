@@ -9,12 +9,16 @@ class Candidate extends Model
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'cv_file',
-        'parsed_data',
+        'skills',
         'score',
+        'ai_summary',
+        'parsed_data',
     ];
 
     protected $casts = [
-    'parsed_data' => 'array',
-];
+        'skills' => 'array',
+        'parsed_data' => 'array',
+    ];
 }
