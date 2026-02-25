@@ -23,8 +23,8 @@ class Candidate extends Model
         'parsed_data' => 'array',
     ];
 
-    public function job()
+    public function jobPost()
 {
-    return $this->belongsTo(Job::class);
+    return $this->belongsTo(JobPost::class);
 }
 }
