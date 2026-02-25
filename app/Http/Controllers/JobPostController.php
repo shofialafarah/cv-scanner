@@ -12,7 +12,8 @@ class JobPostController extends Controller
      */
     public function index()
     {
-        $jobs = JobPost::latest()->get();
+        // Mengambil semua lowongan beserta jumlah kandidat yang melamar
+        $jobs = JobPost::withCount('candidates')->latest()->get();
         return view('jobs.index', compact('jobs'));
     }
 
