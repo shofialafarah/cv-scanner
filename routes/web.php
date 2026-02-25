@@ -13,5 +13,6 @@ Route::get('/candidates/create', [CandidateController::class, 'create'])->name('
 Route::post('/candidates', [CandidateController::class, 'store'])->name('candidates.store');
 
 Route::get('/jobs', [JobPostController::class, 'index'])->name('jobs.index');
+Route::get('/jobs', [JobPostController::class, 'show'])->name('jobs.show');
 Route::get('/jobs/create', [JobPostController::class, 'create'])->name('jobs.create');
 Route::post('/jobs', [JobPostController::class, 'store'])->name('jobs.store');

@@ -40,13 +40,16 @@ class JobPostController extends Controller
         return redirect()->route('jobs.index')
             ->with('success', 'Job berhasil dibuat!');
     }
-    
+
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(JobPost $job)
     {
-        //
+        // Mengambil kandidat yang melamar khusus di lowongan ini
+        $candidates = $job->candidates()->orderBy('score', 'desc')->get();
+
+        return view('jobs.show', compact('job', 'candidates'));
     }
 
     /**

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidate;
+use App\Models\JobPost;
+use App\Services\AIService;
 use Illuminate\Http\Request;
 use Smalot\PdfParser\Parser;
-use App\Services\AIService;
 
 class CandidateController extends Controller
 {
@@ -23,40 +24,44 @@ class CandidateController extends Controller
      */
     public function create()
     {
-        return view('candidates.create');
+        // Mengambil semua data lowongan
+        $jobs = JobPost::all();
+
+        // Mengirim variabel $jobs ke view candidates.create
+        return view('candidates.create', compact('jobs'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, AIService $aiService)
-{
-    $request->validate([
-        'cv' => 'required|mimes:pdf|max:2048'
-    ]);
+    {
+        $request->validate([
+            'cv' => 'required|mimes:pdf|max:2048'
+        ]);
 
-    $path = $request->file('cv')->store('cvs', 'public');
+        $path = $request->file('cv')->store('cvs', 'public');
 
-    $parser = new Parser();
-    $pdf = $parser->parseFile(storage_path('app/public/' . $path));
-    $text = $pdf->getText();
+        $parser = new Parser();
+        $pdf = $parser->parseFile(storage_path('app/public/' . $path));
+        $text = $pdf->getText();
 
-    $aiResult = $aiService->analyzeCV($text);
+        $aiResult = $aiService->analyzeCV($text);
 
-    Candidate::create([
-        'name' => $aiResult['name'] ?? null,
-        'email' => $aiResult['email'] ?? null,
-        'phone' => $aiResult['phone'] ?? null,
-        'cv_file' => $path,
-        'skills' => $aiResult['skills'] ?? [],
-        'score' => $aiResult['score'] ?? null,
-        'ai_summary' => $aiResult['summary'] ?? null,
-        'parsed_data' => $aiResult
-    ]);
+        Candidate::create([
+            'name' => $aiResult['name'] ?? null,
+            'email' => $aiResult['email'] ?? null,
+            'phone' => $aiResult['phone'] ?? null,
+            'cv_file' => $path,
+            'skills' => $aiResult['skills'] ?? [],
+            'score' => $aiResult['score'] ?? null,
+            'ai_summary' => $aiResult['summary'] ?? null,
+            'parsed_data' => $aiResult
+        ]);
 
-    return redirect()->route('candidates.index')
-        ->with('success', 'CV berhasil dianalisis oleh AI!');
-}
+        return redirect()->route('candidates.index')
+            ->with('success', 'CV berhasil dianalisis oleh AI!');
+    }
 
     /**
      * Display the specified resource.

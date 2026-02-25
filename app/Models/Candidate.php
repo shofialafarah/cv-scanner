@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Candidate extends Model
 {
     protected $fillable = [
-        'job_id',
+        'job_post_id',
         'name',
         'email',
         'phone',
