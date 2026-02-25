@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
 // Hanya User yang sudah Login DAN punya role 'hr' yang bisa akses
 Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::resource('jobs', JobPostController::class);
+    // Pindahkan tes-hr ke sini agar rapi di grupnya
+    Route::get('/tes-hr', function() {
+        return "Halo HR! Kamu berhasil masuk ke area terlarang.";
+    });
 });
 
 // --- AREA KANDIDAT ---
