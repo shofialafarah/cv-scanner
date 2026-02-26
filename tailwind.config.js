@@ -12,8 +12,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Bricolage Grotesque', 'sans-serif'],
             },
+            colors: {
+                // Warna gelap custom agar tidak hitam pekat (biar lebih nyaman di mata)
+                'dark-bg': '#0B0F1A',
+                'dark-card': '#161B2D',
+            }
         },
     },
 

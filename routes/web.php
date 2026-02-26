@@ -4,13 +4,18 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CandidateController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\WelcomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = Auth::user(); 
+
+    if ($user && $user->role === 'hr') {
+        return redirect()->route('jobs.index');
+    }
+    return redirect()->route('candidates.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -20,19 +25,17 @@ Route::middleware('auth')->group(function () {
 });
 
 // --- AREA HR ---
-// Hanya User yang sudah Login DAN punya role 'hr' yang bisa akses
 Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::resource('jobs', JobPostController::class);
-    // Pindahkan tes-hr ke sini agar rapi di grupnya
-    Route::get('/tes-hr', function() {
-        return "Halo HR! Kamu berhasil masuk ke area terlarang.";
-    });
 });
 
-// --- AREA KANDIDAT ---
-// User biasa yang sudah login bisa apply
+// --- AREA KANDIDAT & UMUM (Auth) ---
 Route::middleware(['auth'])->group(function () {
-    Route::get('/apply/{job_post_id}', [CandidateController::class, 'create'])->name('candidates.create');
-    Route::post('/apply', [CandidateController::class, 'store'])->name('candidates.store');
+    Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
+    
+    Route::get('/candidates/apply', [CandidateController::class, 'create'])->name('candidates.create');
+    Route::post('/candidates/store', [CandidateController::class, 'store'])->name('candidates.store');
+
+    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
 });
 require __DIR__.'/auth.php';

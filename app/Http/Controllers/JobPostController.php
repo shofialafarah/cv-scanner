@@ -47,7 +47,7 @@ class JobPostController extends Controller
      */
     public function show(JobPost $job)
     {
-        // Mengambil kandidat yang melamar khusus di lowongan ini
+        // Mengambil kandidat terkait, diurutkan berdasarkan skor AI tertinggi
         $candidates = $job->candidates()->orderBy('score', 'desc')->get();
 
         return view('jobs.show', compact('job', 'candidates'));

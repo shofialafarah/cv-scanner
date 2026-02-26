@@ -15,6 +15,9 @@
                 </div>
             @endif
 
+            <a href="{{ route('jobs.index') }}" class="bg-indigo-600 text-white px-4 py-2 rounded">
+    Kelola Lowongan & Ranking
+</a>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in!") }}
