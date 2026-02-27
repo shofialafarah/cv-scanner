@@ -27,12 +27,17 @@ class JobPostController extends Controller
         $request->validate([
             'title' => 'required',
             'description' => 'required',
-            'required_skills' => 'nullable'
+            'deadline' => 'required|date|after_or_equal:today',
+            'required_skills' => 'required'
+        ], [
+            'deadline.after_or_equal' => 'Masa iya tenggat waktunya kemarin? Yuk, pilih tanggal hari ini atau besok!',
+            'deadline.date' => 'Format tanggal salah ya!',
         ]);
 
         JobPost::create([
             'title' => $request->title,
             'description' => $request->description,
+            'deadline' => $request->deadline,
             'required_skills' => $request->required_skills
                 ? explode(',', $request->required_skills)
                 : []
@@ -47,33 +52,59 @@ class JobPostController extends Controller
      */
     public function show(JobPost $job)
     {
-        // Mengambil kandidat terkait, diurutkan berdasarkan skor AI tertinggi
         $candidates = $job->candidates()->orderBy('score', 'desc')->get();
 
-        return view('jobs.show', compact('job', 'candidates'));
+        $daysLeft = (int) now()->diffInDays(\Carbon\Carbon::parse($job->deadline), false);
+
+        $isUrgent = $daysLeft <= 2 && $daysLeft >= 0;
+
+        return view('jobs.show', compact('job', 'candidates', 'isUrgent', 'daysLeft'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(JobPost $job)
     {
-        //
+        return view('jobs.edit', compact('job'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, JobPost $job)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required',
+            'deadline' => 'required|date|after_or_equal:today',
+            'required_skills' => 'required',
+        ], [
+            'deadline.after_or_equal' => 'Masa iya tenggat waktunya kemarin? Yuk, pilih tanggal hari ini atau besok!',
+            'deadline.date' => 'Format tanggal salah ya!',
+        ]);
+
+        // Jika di database kamu simpan sebagai array (JSON)
+        if (is_string($request->required_skills)) {
+            $validated['required_skills'] = array_map('trim', explode(',', $request->required_skills));
+        }
+
+        $job->update($validated);
+
+        return redirect()->route('jobs.index')->with('success', 'Lowongan berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(JobPost $job)
     {
-        //
+        // Cek dulu, kalau sudah ada pelamar, jangan izinkan hapus permanen
+        if ($job->candidates()->count() > 0) {
+            return back()->with('error', 'Gagal! Lowongan ini sudah memiliki pelamar. Gunakan fitur "Tutup Lowongan" saja agar data pelamar tetap tersimpan.');
+        }
+
+        $job->delete();
+        return redirect()->route('jobs.index')->with('success', 'Lowongan kosong berhasil dihapus.');
     }
 }

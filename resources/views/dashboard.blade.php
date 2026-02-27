@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if (session('error'))
                 <div class="mb-4 p-4 bg-red-500 text-white rounded-lg shadow-md flex items-center justify-between">
                     <span>{{ session('error') }}</span>
@@ -16,8 +16,8 @@
             @endif
 
             <a href="{{ route('jobs.index') }}" class="bg-indigo-600 text-white px-4 py-2 rounded">
-    Kelola Lowongan & Ranking
-</a>
+                Kelola Lowongan & Ranking
+            </a>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in!") }}

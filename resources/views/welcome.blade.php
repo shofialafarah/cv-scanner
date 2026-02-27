@@ -7,17 +7,21 @@
     <title>Karir AI Scanner</title>
     @vite('resources/css/app.css')
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
+        rel="stylesheet">
 
-<style>
-    * {
-        font-family: 'Bricolage Grotesque', sans-serif !important;
-    }
-    h2, h3, h4 {
-        letter-spacing: -0.02em;
-    }
-</style>
+    <style>
+        * {
+            font-family: 'Bricolage Grotesque', sans-serif !important;
+        }
+
+        h2,
+        h3,
+        h4 {
+            letter-spacing: -0.02em;
+        }
+    </style>
 </head>
 
 <body class="bg-[#0B0F1A] text-slate-200 selection:bg-indigo-500/30">
@@ -65,10 +69,30 @@
                                 class="bg-indigo-500/10 text-indigo-400 text-[10px] font-black px-4 py-1.5 rounded-full uppercase border border-indigo-500/20">
                                 {{ $job->category ?? 'Full Time' }}
                             </span>
-                            <div
-                                class="flex items-center text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full">
-                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> Aktif
-                            </div>
+                            @php
+                                // Hitung sisa hari dari sekarang ke deadline
+                                $deadline = \Carbon\Carbon::parse($job->deadline);
+                                $daysLeft = (int) now()->diffInDays($deadline, false);
+                            @endphp
+
+                            @if ($daysLeft <= 0)
+                                <div
+                                    class="flex items-center text-[10px] text-red-400 font-bold bg-red-500/10 px-3 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span> Terakhir Hari Ini
+                                </div>
+                            @elseif($daysLeft <= 2)
+                                <div
+                                    class="flex items-center text-[10px] text-amber-400 font-bold bg-amber-500/10 px-3 py-1 rounded-full animate-pulse border border-amber-500/20">
+                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span> Urgent
+                                    ({{ $daysLeft }} Hari Lagi)
+                                </div>
+                            @else
+                                <div
+                                    class="flex items-center text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
+                                    Aktif
+                                </div>
+                            @endif
                         </div>
 
                         <h4 class="text-2xl font-bold mb-3 text-white transition-colors">
@@ -77,6 +101,14 @@
                         <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light">
                             {{ $job->description }}
                         </p>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 mb-6 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z" />
+                        </svg>
+                        Batas: {{ $deadline->translatedFormat('d F Y') }}
                     </div>
 
                     <a href="{{ route('candidates.create', ['job_post_id' => $job->id]) }}"

@@ -1,3 +1,4 @@
+@section('title', 'Riwayat Lamaran')
 <x-app-layout>
     <div class="py-12 bg-[#0B0F1A] min-h-screen font-sans selection:bg-indigo-500/30">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -13,16 +14,28 @@
                     </span>
                 </div>
 
-                <div class="flex items-center gap-2 p-1.5 bg-[#161B2D] border border-slate-800 rounded-2xl w-fit">
-                    <a href="{{ route('candidates.index') }}"
-                        class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
-                        LAMARAN SAYA
-                    </a>
-                    <a href="{{ route('home') }}"
-                        class="px-6 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-300 transition-all">
-                        CARI LOWONGAN
-                    </a>
-                </div>
+                <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2 p-1.5 bg-[#161B2D] border border-slate-800 rounded-2xl w-fit">
+        <a href="{{ route('candidates.index') }}"
+            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
+            LAMARAN SAYA
+        </a>
+        <a href="{{ route('candidates.available') }}"
+            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.available') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
+            CARI LOWONGAN
+        </a>
+    </div>
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            LOGOUT
+        </button>
+    </form>
+</div>
             </div>
 
             <div class="grid grid-cols-1 gap-6">

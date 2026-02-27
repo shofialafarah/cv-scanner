@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 // --- AREA HR ---
 Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::resource('jobs', JobPostController::class);
+    Route::delete('/jobs/{job}', [JobPostController::class, 'destroy'])->name('jobs.destroy');
 });
 
 // --- AREA KANDIDAT & UMUM (Auth) ---
@@ -35,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/candidates/apply', [CandidateController::class, 'create'])->name('candidates.create');
     Route::post('/candidates/store', [CandidateController::class, 'store'])->name('candidates.store');
-
     Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
+    Route::get('/available-jobs', [CandidateController::class, 'availableJobs'])->name('candidates.available');
 });
 require __DIR__.'/auth.php';

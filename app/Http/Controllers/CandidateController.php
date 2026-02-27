@@ -127,4 +127,14 @@ class CandidateController extends Controller
     {
         //
     }
+
+    public function availableJobs()
+    {
+        // ambil lowongan yang deadlinenya masih lama (belum lewat hari ini)
+        $jobs = JobPost::where('deadline', '>=', now()->startOfDay())
+            ->latest()
+            ->get();
+
+        return view('candidates.available_jobs', compact('jobs'));
+    }
 }

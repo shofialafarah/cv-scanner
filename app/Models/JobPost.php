@@ -9,11 +9,13 @@ class JobPost extends Model
     protected $fillable = [
         'title',
         'description',
+        'deadline',
         'required_skills',
     ];
 
     protected $casts = [
         'required_skills' => 'array',
+        'deadline' => 'date',
     ];
     
     public function candidates()

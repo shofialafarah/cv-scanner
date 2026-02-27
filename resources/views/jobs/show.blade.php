@@ -1,88 +1,138 @@
+@section('title', 'Ranking AI: ' . $job->title)
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 uppercase tracking-widest">
-                Detail Lowongan: {{ $job->title }}
-            </h2>
-            <a href="{{ route('jobs.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-bold">
-                &larr; Kembali
-            </a>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('jobs.index') }}"
+                    class="p-2 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </a>
+                <h2 class="font-black text-2xl text-white tracking-tight uppercase">
+                    Detail Lowongan
+                </h2>
+            </div>
+
+            @if ($isUrgent)
+                <div
+                    class="animate-pulse bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.2em]">
+                    @if ($daysLeft == 0)
+                        ⚠️ DEADLINE HARI INI!
+                    @else
+                        ⚠️ URGENT: {{ $daysLeft }} HARI LAGI
+                    @endif
+                </div>
+            @endif
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-12 bg-[#0B0F1A] min-h-screen">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
-            <div class="bg-white p-6 shadow sm:rounded-lg">
-                <h3 class="text-lg font-bold mb-2">Deskripsi & Skill</h3>
-                <p class="text-gray-600 mb-4">{{ $job->description }}</p>
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($job->required_skills as $skill)
-                        <span
-                            class="bg-gray-100 text-gray-700 px-3 py-1 rounded text-xs border">{{ $skill }}</span>
-                    @endforeach
+            <div class="bg-[#161B2D] border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8">
+                    <span
+                        class="text-slate-800 font-black text-6xl opacity-20 uppercase">{{ substr($job->title, 0, 2) }}</span>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-black text-white mb-4">{{ $job->title }}</h3>
+                    <p class="text-slate-400 leading-relaxed max-w-3xl mb-6">{{ $job->description }}</p>
+
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($job->required_skills as $skill)
+                            <span
+                                class="bg-indigo-500/5 text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-bold border border-indigo-500/10 lowercase font-mono">
+                                #{{ $skill }}
+                            </span>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-                <div class="p-6 border-b border-gray-100">
-                    <h3 class="text-lg font-bold">Ranking Kandidat (Berdasarkan AI Score)</h3>
+            <div class="bg-[#161B2D] border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
+                <div class="p-8 border-b border-slate-800 bg-slate-900/30 flex justify-between items-center">
+                    <h3 class="text-lg font-black text-white flex items-center gap-3">
+                        <span class="p-2 bg-indigo-500 rounded-lg shadow-lg shadow-indigo-500/50 text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </span>
+                        RANKING KANDIDAT BY AI
+                    </h3>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Total:
+                        {{ $candidates->count() }} Pelamar</span>
                 </div>
 
-                <div class="p-6">
+                <div class="p-4 overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="text-gray-400 text-sm uppercase">
-                                <th class="pb-4">Peringkat</th>
-                                <th class="pb-4">Nama Kandidat</th>
-                                <th class="pb-4">Kesesuaian (Score)</th>
-                                <th class="pb-4 text-right">Aksi</th>
+                            <tr class="text-slate-500 text-[10px] uppercase tracking-[0.2em]">
+                                <th class="px-6 pb-4">Rank</th>
+                                <th class="px-6 pb-4">Kandidat</th>
+                                <th class="px-6 pb-4">AI Score Compatibility</th>
+                                <th class="px-6 pb-4 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-slate-800/50">
                             @forelse($candidates as $index => $candidate)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-4">
-                                        <span
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-full {{ $index == 0 ? 'bg-yellow-100 text-yellow-700 font-bold' : 'bg-gray-100 text-gray-600' }}">
+                                <tr class="group hover:bg-indigo-500/[0.02] transition-all">
+                                    <td class="px-6 py-6">
+                                        <div
+                                            class="w-10 h-10 flex items-center justify-center rounded-2xl font-black text-sm
+                                            {{ $index == 0
+                                                ? 'bg-yellow-500/20 text-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.2)] border border-yellow-500/50'
+                                                : ($index == 1
+                                                    ? 'bg-slate-300/10 text-slate-300'
+                                                    : ($index == 2
+                                                        ? 'bg-orange-500/10 text-orange-500'
+                                                        : 'bg-slate-800 text-slate-500')) }}">
                                             {{ $index + 1 }}
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td class="py-4">
+                                    <td class="px-6 py-6">
                                         <a href="{{ route('candidates.show', $candidate->id) }}"
-                                            class="font-bold text-indigo-600 hover:underline">
+                                            class="font-bold text-white hover:text-indigo-400 block transition-colors">
                                             {{ $candidate->name }}
                                         </a>
-                                        <div class="text-xs text-gray-500">{{ $candidate->email }}</div>
+                                        <span class="text-xs text-slate-500 font-mono">{{ $candidate->email }}</span>
                                     </td>
-                                    <td class="py-4 w-1/3">
-                                        <div class="flex items-center">
-                                            <div class="flex-1 bg-gray-200 rounded-full h-2 mr-3">
-                                                <div class="bg-indigo-600 h-2 rounded-full"
+                                    <td class="px-6 py-6">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex-1 bg-slate-800 rounded-full h-2 max-w-[150px]">
+                                                <div class="bg-indigo-500 h-2 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)] transition-all duration-1000"
                                                     style="width: {{ $candidate->score }}%"></div>
                                             </div>
                                             <span
-                                                class="text-sm font-semibold text-indigo-700">{{ $candidate->score }}%</span>
+                                                class="text-lg font-black text-indigo-400 leading-none">{{ $candidate->score }}%</span>
                                         </div>
                                     </td>
-                                    <td class="py-4 text-right">
+                                    <td class="px-6 py-6 text-right">
                                         <a href="{{ asset('storage/' . $candidate->cv_file) }}" target="_blank"
-                                            class="bg-gray-800 text-white px-4 py-2 rounded text-xs hover:bg-black transition">
-                                            Lihat CV (PDF)
+                                            class="inline-flex items-center gap-2 bg-slate-800 hover:bg-white hover:text-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black transition-all border border-slate-700 uppercase tracking-widest">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                            View CV
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-10 text-center text-gray-400">Belum ada kandidat yang
-                                        melamar untuk posisi ini.</td>
+                                    <td colspan="4" class="py-20 text-center">
+                                        <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Belum ada
+                                            pelamar terdeteksi.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
 </x-app-layout>
