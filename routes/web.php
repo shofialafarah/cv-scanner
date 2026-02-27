@@ -6,6 +6,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CandidateController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\WelcomeController;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -40,3 +41,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/available-jobs', [CandidateController::class, 'availableJobs'])->name('candidates.available');
 });
 require __DIR__.'/auth.php';
+
+Route::get('/gas-migrate', function () {
+    try {
+        Artisan::call('migrate:fresh', ['--force' => true]);
+        return "Migrasi Berhasil! Berikut detailnya: <br><pre>" . Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "❌ Gagal Migrate: " . $e->getMessage();
+    }
+});
