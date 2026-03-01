@@ -9,7 +9,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-[#0B0F1A] min-h-screen">
+    <div class="py-12 bg-[#0B0F1A]">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#161B2D] border border-slate-800 rounded-[2.5rem] p-10 shadow-2xl">
                 
@@ -60,6 +60,7 @@
             </div>
         </div>
     </div>
+    <x-footer />
     @if ($errors->any())
     <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-2xl">
         @foreach ($errors->all() as $error)

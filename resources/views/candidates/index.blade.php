@@ -1,4 +1,4 @@
-@section('title', 'Riwayat Lamaran')
+@section('title', 'Halaman Kandidat')
 <x-app-layout>
     <div class="py-12 bg-[#0B0F1A] min-h-screen font-sans selection:bg-indigo-500/30">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -15,27 +15,29 @@
                 </div>
 
                 <div class="flex items-center justify-between gap-4">
-    <div class="flex items-center gap-2 p-1.5 bg-[#161B2D] border border-slate-800 rounded-2xl w-fit">
-        <a href="{{ route('candidates.index') }}"
-            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
-            LAMARAN SAYA
-        </a>
-        <a href="{{ route('candidates.available') }}"
-            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.available') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
-            CARI LOWONGAN
-        </a>
-    </div>
+                    <div class="flex items-center gap-2 p-1.5 bg-[#161B2D] border border-slate-800 rounded-2xl w-fit">
+                        <a href="{{ route('candidates.index') }}"
+                            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
+                            LAMARAN SAYA
+                        </a>
+                        <a href="{{ route('candidates.available') }}"
+                            class="px-6 py-2.5 rounded-xl text-xs font-black transition-all {{ request()->routeIs('candidates.available') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300' }}">
+                            CARI LOWONGAN
+                        </a>
+                    </div>
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            LOGOUT
-        </button>
-    </form>
-</div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            LOGOUT
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 gap-6">
@@ -106,14 +108,27 @@
                                     </svg>
                                     "{{ $app->ai_summary }}"
                                 </div>
-                                <a href="{{ route('candidates.show', $app->id) }}"
-                                    class="inline-flex items-center px-6 py-3 bg-white text-[#0B0F1A] rounded-xl font-black text-xs hover:bg-indigo-500 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-white/5">
-                                    LIHAT DETAIL
-                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
+                                <div class="flex items-center gap-4"> {{-- gap-4 memberikan jarak antar elemen di dalamnya --}}
+                                    <a href="{{ route('candidates.show', $app->id) }}"
+                                        class="inline-flex items-center px-6 py-3 bg-white text-[#0B0F1A] rounded-xl font-black text-xs hover:bg-indigo-500 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-white/5">
+                                        LIHAT DETAIL
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+
+                                    <form action="{{ route('candidates.destroy', $app->id) }}" method="POST"
+                                        id="delete-form-{{ $app->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDelete({{ $app->id }})"
+                                            class="px-6 py-3 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-xl text-xs font-black hover:bg-rose-500 hover:text-white transition-all uppercase tracking-widest">
+                                            Batalkan
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -139,4 +154,39 @@
             </div>
         </div>
     </div>
+    <x-footer />
 </x-app-layout>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Yakin mau batal?',
+            text: "Data lamaran dan file CV kamu akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6366f1', // Warna Indigo (sesuai tema kamu)
+            cancelButtonColor: '#f43f5e',  // Warna Rose
+            confirmButtonText: 'Ya, Batalkan!',
+            cancelButtonText: 'Gak jadi',
+            background: '#161B2D',        // Sesuaikan background dark mode kamu
+            color: '#ffffff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        })
+    }
+
+    // Munculkan notifikasi sukses jika ada session success
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            background: '#161B2D',
+            color: '#ffffff',
+            confirmButtonColor: '#6366f1'
+        });
+    @endif
+</script>

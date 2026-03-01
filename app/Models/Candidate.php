@@ -17,6 +17,7 @@ class Candidate extends Model
         'score',
         'ai_summary',
         'parsed_data',
+        'status'
     ];
 
     protected $casts = [
@@ -25,7 +26,7 @@ class Candidate extends Model
     ];
 
     public function jobPost()
-{
-    return $this->belongsTo(JobPost::class);
-}
+    {
+        return $this->belongsTo(JobPost::class);
+    }
 }

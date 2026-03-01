@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
-    $user = Auth::user(); 
+    $user = Auth::user();
 
     if ($user && $user->role === 'hr') {
         return redirect()->route('jobs.index');
@@ -29,18 +29,25 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::resource('jobs', JobPostController::class);
     Route::delete('/jobs/{job}', [JobPostController::class, 'destroy'])->name('jobs.destroy');
+    Route::patch('/candidates/{candidate}/status', [CandidateController::class, 'updateStatus'])->name('candidates.updateStatus');
 });
 
 // --- AREA KANDIDAT & UMUM (Auth) ---
 Route::middleware(['auth'])->group(function () {
+    // 1. Yang URL-nya 'fix' (tulisan tetap) taruh di paling atas
     Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
-    
     Route::get('/candidates/apply', [CandidateController::class, 'create'])->name('candidates.create');
-    Route::post('/candidates/store', [CandidateController::class, 'store'])->name('candidates.store');
-    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
     Route::get('/available-jobs', [CandidateController::class, 'availableJobs'])->name('candidates.available');
+    
+    // 2. Yang pakai POST (simpan data)
+    Route::post('/candidates/store', [CandidateController::class, 'store'])->name('candidates.store');
+
+    // 3. Yang pakai {parameter} (ID angka) taruh di paling bawah
+    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
+    Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
 });
-require __DIR__.'/auth.php';
+
+require __DIR__ . '/auth.php';
 
 Route::get('/gas-migrate', function () {
     try {

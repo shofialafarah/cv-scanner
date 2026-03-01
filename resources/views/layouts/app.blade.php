@@ -27,7 +27,7 @@
 </head>
 
 <body class="font-sans antialiased bg-[#0B0F1A] text-slate-200">
-    <div class="min-h-screen bg-[#0B0F1A]">
+    <div class="min-h-screen flex flex-col bg-[#0B0F1A]">
         @include('layouts.navigation')
 
         @isset($header)

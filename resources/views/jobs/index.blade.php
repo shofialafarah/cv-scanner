@@ -33,7 +33,7 @@
                     @csrf
                     <button type="submit"
                         class="p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl border border-red-500/20 transition-all transform active:scale-95 group"
-                        title="Keluar Akun">
+                        title="logout">
                         <svg class="w-5 h-5 transition-transform group-hover:rotate-12" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -45,7 +45,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-[#0B0F1A] min-h-screen">
+    <div class="py-12 bg-[#0B0F1A] min-h-[calc(100vh-200px)] flex flex-col">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#161B2D] border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <div class="overflow-x-auto">
@@ -164,6 +164,8 @@
             </div>
         </div>
     </div>
+
+    <x-footer />
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

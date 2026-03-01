@@ -8,6 +8,7 @@ use App\Services\AIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Smalot\PdfParser\Parser;
+use Illuminate\Support\Facades\Storage;
 
 class CandidateController extends Controller
 {
@@ -54,6 +55,15 @@ class CandidateController extends Controller
             'cv' => 'required|mimes:pdf|max:2048',
             'job_post_id' => 'required|exists:job_posts,id'
         ]);
+
+        // PROTEKSI TAMBAHAN: Cek di database apakah user sudah pernah melamar di loker ini
+        $existingApplication = Candidate::where('user_id', Auth::id())
+            ->where('job_post_id', $request->job_post_id)
+            ->first();
+
+        if ($existingApplication) {
+            return redirect()->route('candidates.index')->with('error', 'Kamu sudah melamar di lowongan ini!');
+        }
 
         // 2. Simpan File
         $path = $request->file('cv')->store('cvs', 'public');
@@ -123,18 +133,41 @@ class CandidateController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Candidate $candidate)
     {
-        //
+        if ($candidate->user_id !== Auth::id()) {
+            return back()->with('error', 'Kamu tidak punya akses untuk melakukan ini.');
+        }
+
+        if ($candidate->cv_file && Storage::disk('public')->exists($candidate->cv_file)) {
+            Storage::disk('public')->delete($candidate->cv_file);
+        }
+
+        $candidate->delete();
+
+        return redirect()->route('candidates.index')->with('success', 'Lamaran berhasil dibatalkan.');
     }
 
     public function availableJobs()
     {
-        // ambil lowongan yang deadlinenya masih lama (belum lewat hari ini)
-        $jobs = JobPost::where('deadline', '>=', now()->startOfDay())
+        $jobs = JobPost::with('candidates')
+            ->where('deadline', '>=', now()->startOfDay())
             ->latest()
             ->get();
 
         return view('candidates.available_jobs', compact('jobs'));
+    }
+
+    public function updateStatus(Request $request, Candidate $candidate)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,interview,rejected'
+        ]);
+
+        $candidate->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status ' . $candidate->name . ' berhasil diperbarui ke ' . strtoupper($request->status));
     }
 }

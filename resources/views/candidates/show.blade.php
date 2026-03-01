@@ -1,3 +1,4 @@
+@section('title', 'Analisis AI')
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -11,7 +12,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-[#0B0F1A] min-h-screen">
+    <div class="py-12 bg-[#0B0F1A]">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
             <div class="bg-[#161B2D] overflow-hidden shadow-2xl rounded-[2.5rem] p-10 border border-slate-800 relative group">
@@ -113,4 +114,5 @@
             @endif
         </div>
     </div>
+    <x-footer />
 </x-app-layout>

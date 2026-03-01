@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karir AI Scanner</title>
+    <title>Karir CV Scanner</title>
     @vite('resources/css/app.css')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,26 +21,33 @@
         h4 {
             letter-spacing: -0.02em;
         }
+
+        /* Tambahan agar scroll halus */
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 
 <body class="bg-[#0B0F1A] text-slate-200 selection:bg-indigo-500/30">
-    <nav class="mt-6 mx-4 md:mx-auto max-w-7xl">
-        <div
-            class="bg-[#161B2D]/80 backdrop-blur-xl shadow-2xl rounded-2xl px-6 py-4 flex justify-between items-center border border-slate-800 sticky top-6 z-50">
-            <a href="/" class="text-2xl font-black tracking-tighter text-white flex items-center">
-                <span
-                    class="bg-indigo-500 text-white p-1 rounded-lg mr-2 shadow-[0_0_15px_rgba(99,102,241,0.5)]">AI</span>
-                SCANNER
-            </a>
-            <div class="space-x-6 flex items-center font-bold text-sm">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-slate-400 hover:text-white transition">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-slate-400 hover:text-white transition">Masuk</a>
-                    <a href="{{ route('register') }}"
-                        class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-500 transition shadow-lg shadow-indigo-500/20">Daftar</a>
-                @endauth
+    <nav class="sticky top-0 z-50 py-6 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div
+                class="bg-[#161B2D]/80 backdrop-blur-xl shadow-2xl rounded-2xl px-6 py-4 flex justify-between items-center border border-white/5">
+                <a href="/" class="text-2xl font-black tracking-tighter text-white flex items-center">
+                    <span
+                        class="bg-gradient-to-br from-indigo-500 to-violet-700 text-white p-2 rounded-lg mr-2 shadow-[0_0_15px_rgba(99,102,241,0.5)]">CV</span>
+                    SCANNER
+                </a>
+                <div class="space-x-6 flex items-center font-bold text-sm">
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="text-slate-400 hover:text-white transition">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-slate-400 hover:text-white transition">Masuk</a>
+                        <a href="{{ route('register') }}"
+                            class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-500 transition shadow-lg shadow-indigo-500/20">Daftar</a>
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>
@@ -49,8 +56,7 @@
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="dark:text-white text-4xl md:text-5xl font-extrabold mb-4">Temukan Karir Impian Anda</h2>
             <p class="dark:text-gray-400 text-lg max-w-2xl mx-auto">Upload CV Anda dan biarkan AI kami mencocokkan
-                keahlian
-                Anda dengan lowongan yang tersedia secara objektif.</p>
+                keahlian Anda dengan lowongan yang tersedia secara objektif.</p>
         </div>
     </header>
 
@@ -70,7 +76,6 @@
                                 {{ $job->category ?? 'Full Time' }}
                             </span>
                             @php
-                                // Hitung sisa hari dari sekarang ke deadline
                                 $deadline = \Carbon\Carbon::parse($job->deadline);
                                 $daysLeft = (int) now()->diffInDays($deadline, false);
                             @endphp
@@ -95,12 +100,8 @@
                             @endif
                         </div>
 
-                        <h4 class="text-2xl font-bold mb-3 text-white transition-colors">
-                            {{ $job->title }}</h4>
-
-                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light">
-                            {{ $job->description }}
-                        </p>
+                        <h4 class="text-2xl font-bold mb-3 text-white transition-colors">{{ $job->title }}</h4>
+                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light">{{ $job->description }}</p>
                     </div>
                     <div
                         class="flex items-center gap-2 mb-6 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
@@ -117,31 +118,12 @@
                     </a>
                 </div>
             @empty
+                <p class="text-slate-500 text-center col-span-full">Belum ada lowongan tersedia.</p>
             @endforelse
         </div>
     </main>
 
-    <footer class="mt-20 pb-10 px-4">
-        <div
-            class="max-w-7xl mx-auto bg-[#161B2D] border border-slate-800 py-12 rounded-[2.5rem] text-center shadow-2xl">
-            <div class="flex flex-col items-center">
-                <div class="text-xl font-black text-white mb-4 flex items-center">
-                    <span class="bg-indigo-500 text-white p-1 rounded-md mr-2 text-sm">AI</span>
-                    SCANNER
-                </div>
-                <p class="text-slate-500 text-xs mb-6 max-w-xs leading-relaxed">
-                    Platform rekrutmen dengan teknologi AI Scanner.
-                </p>
-                <div class="h-[1px] w-20 bg-slate-800 mb-6"></div>
-                <p class="text-slate-400 font-medium tracking-wide">
-                    &copy; 2026 <span class="text-indigo-400">Shofia Nabila Elfa Rahma</span>
-                </p>
-                <p class="text-slate-600 text-[10px] mt-2 uppercase tracking-[0.2em]">
-                    AI-Career Scanner System v1.0
-                </p>
-            </div>
-        </div>
-    </footer>
+    <x-footer />
 </body>
 
 </html>
