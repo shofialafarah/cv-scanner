@@ -1,44 +1,44 @@
 @section('title', 'Register Akun')
 <x-guest-layout>
-    <div class="mb-6 text-center">
+    <div class="mb-6 md:mb-8 text-center px-2">
         <div
-            class="inline-flex items-center justify-center w-16 h-16 bg-indigo-500/10 rounded-2xl mb-4 border border-indigo-500/20">
-            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-indigo-500/10 rounded-2xl mb-4 border border-indigo-500/20">
+            <svg class="w-7 h-7 md:w-8 md:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight">Buat Akun</h1>
-        <p class="text-slate-500 text-sm mt-2">Daftar sekarang untuk mulai analisis CV Anda.</p>
+        <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Buat Akun</h1>
+        <p class="text-slate-500 text-xs md:text-sm mt-2 max-w-[250px] md:max-w-none mx-auto">Daftar sekarang untuk mulai analisis CV Anda.</p>
     </div>
 
-    <form method="POST" action="{{ route('register') }}" class="space-y-4">
+    <form method="POST" action="{{ route('register') }}" class="space-y-4 px-1 md:px-0">
         @csrf
 
         <div class="space-y-2">
-            <label for="name" class="text-sm font-bold text-slate-400 ml-1">Nama Lengkap</label>
+            <label for="name" class="text-xs md:text-sm font-bold text-slate-400 ml-1">Nama Lengkap</label>
             <input id="name" type="text" name="name" :value="old('name')" required autofocus
-                class="block w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-2.5 px-4 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl md:rounded-2xl py-2.5 md:py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
                 placeholder="Nama Anda">
-            <x-input-error :messages="$errors->get('name')" class="mt-2 text-xs text-red-400" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2 text-[10px] md:text-xs text-red-400" />
         </div>
 
         <div class="space-y-2">
-            <label for="email" class="text-sm font-bold text-slate-400 ml-1">Email Address</label>
+            <label for="email" class="text-xs md:text-sm font-bold text-slate-400 ml-1">Email Address</label>
             <input id="email" type="email" name="email" :value="old('email')" required
-                class="block w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-2.5 px-4 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl md:rounded-2xl py-2.5 md:py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
                 placeholder="nama@email.com">
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-400" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2 text-[10px] md:text-xs text-red-400" />
         </div>
 
         <div class="space-y-1.5" x-data="{ show: false }">
             <label for="password" class="text-xs font-bold text-slate-400 ml-1">Password</label>
             <div class="relative">
                 <input id="password" :type="show ? 'text' : 'password'" name="password" required
-                    class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                    class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 md:py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
                     placeholder="••••••••">
                 <button type="button" @click="show = !show"
-                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-indigo-400">
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-indigo-400 transition-colors">
                     <svg x-show="!show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -57,10 +57,10 @@
             <div class="relative">
                 <input id="password_confirmation" :type="show ? 'text' : 'password'" name="password_confirmation"
                     required
-                    class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                    class="block w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 md:py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
                     placeholder="••••••••">
                 <button type="button" @click="show = !show"
-                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-indigo-400">
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-indigo-400 transition-colors">
                     <svg x-show="!show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -74,14 +74,14 @@
             </div>
         </div>
 
-        <div class="pt-2">
+        <div class="pt-2 md:pt-4">
             <button type="submit"
-                class="w-full bg-white text-[#0B0F1A] font-black py-2.5 px-6 rounded-2xl transition-all duration-300 hover:bg-indigo-500 hover:text-white shadow-xl shadow-white/5 active:scale-[0.98]">
+                class="w-full bg-white text-[#0B0F1A] font-black py-3 md:py-3.5 px-6 rounded-xl md:rounded-2xl transition-all duration-300 hover:bg-indigo-500 hover:text-white shadow-xl shadow-white/5 active:scale-[0.98] text-sm md:text-base">
                 DAFTAR SEKARANG
             </button>
         </div>
 
-        <p class="text-center text-slate-500 text-xs font-bold mt-6">
+        <p class="text-center text-slate-500 text-[10px] md:text-xs font-bold mt-6">
             Sudah punya akun?
             <a href="{{ route('login') }}"
                 class="text-indigo-400 hover:text-indigo-300 transition-colors underline decoration-indigo-500/30 underline-offset-4">Masuk
