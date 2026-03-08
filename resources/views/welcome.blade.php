@@ -55,7 +55,8 @@
     <header class="py-10 md:py-16">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="dark:text-white text-3xl md:text-5xl font-extrabold mb-4">Temukan Karir Impian Anda</h2>
-            <p class="dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto">Upload CV Anda dan biarkan AI kami mencocokkan
+            <p class="dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto">Upload CV Anda dan biarkan AI kami
+                mencocokkan
                 keahlian Anda dengan lowongan yang tersedia secara objektif.</p>
         </div>
     </header>
@@ -80,18 +81,27 @@
                                 $daysLeft = (int) now()->diffInDays($deadline, false);
                             @endphp
 
-                            @if ($daysLeft <= 0)
+                            @if ($daysLeft < 0)
+                                {{-- Kondisi jika sudah LEWAT/EXPIRED --}}
                                 <div
-                                    class="flex items-center text-[9px] md:text-[10px] text-red-400 font-bold bg-red-500/10 px-3 py-1 rounded-full whitespace-nowrap">
+                                    class="flex items-center text-[9px] md:text-[10px] text-slate-400 font-bold bg-slate-500/10 px-3 py-1 rounded-full whitespace-nowrap border border-slate-500/20">
+                                    <span class="w-1.5 h-1.5 bg-slate-500 rounded-full mr-2"></span> Sudah Berakhir
+                                </div>
+                            @elseif ($daysLeft == 0)
+                                {{-- Kondisi tepat HARI INI --}}
+                                <div
+                                    class="flex items-center text-[9px] md:text-[10px] text-red-400 font-bold bg-red-500/10 px-3 py-1 rounded-full whitespace-nowrap border border-red-500/20">
                                     <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span> Terakhir Hari Ini
                                 </div>
                             @elseif($daysLeft <= 2)
+                                {{-- Kondisi MENDESAK (1-2 hari lagi) --}}
                                 <div
                                     class="flex items-center text-[9px] md:text-[10px] text-amber-400 font-bold bg-amber-500/10 px-3 py-1 rounded-full animate-pulse border border-amber-500/20 whitespace-nowrap">
                                     <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span> Urgent
                                     ({{ $daysLeft }} Hari Lagi)
                                 </div>
                             @else
+                                {{-- Kondisi MASIH LAMA --}}
                                 <div
                                     class="flex items-center text-[9px] md:text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 whitespace-nowrap">
                                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
@@ -100,8 +110,10 @@
                             @endif
                         </div>
 
-                        <h4 class="text-xl md:text-2xl font-bold mb-3 text-white transition-colors">{{ $job->title }}</h4>
-                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light whitespace-pre-line">{{ $job->description }}</p>
+                        <h4 class="text-xl md:text-2xl font-bold mb-3 text-white transition-colors">{{ $job->title }}
+                        </h4>
+                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light whitespace-pre-line">
+                            {{ $job->description }}</p>
                     </div>
                     <div
                         class="flex items-center gap-2 mb-6 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
