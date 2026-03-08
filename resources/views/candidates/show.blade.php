@@ -76,7 +76,7 @@
                             <span class="text-xs md:text-sm text-emerald-400 font-bold group-hover:underline">{{ $candidate->phone }}</span>
                         </a>
 
-                        <a href="{{ asset('storage/' . $candidate->cv_file) }}" target="_blank"
+                        <a href="{{ Storage::disk('supabase')->url($candidate->cv_file) }}" target="_blank"
                            class="flex items-center justify-center gap-3 w-full bg-slate-800 hover:bg-slate-700 text-white font-black py-4 rounded-2xl transition-all shadow-lg mt-2 text-xs md:text-sm uppercase tracking-widest border border-slate-700">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                             VIEW CV ORIGINAL

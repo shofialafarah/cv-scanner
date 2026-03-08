@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -60,6 +60,12 @@ return [
             'report' => false,
         ],
 
+        'supabase' => [
+            'driver' => 'supabase',
+            'key'    => env('SUPABASE_KEY'),
+            'url'    => env('SUPABASE_URL'),
+            'bucket' => env('SUPABASE_STORAGE_BUCKET'),
+        ],
     ],
 
     /*

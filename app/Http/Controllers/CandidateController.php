@@ -50,13 +50,12 @@ class CandidateController extends Controller
      */
     public function store(Request $request, AIService $aiService)
     {
-        // 1. Validasi: Pastikan job_post_id ada
+        // 1. Validasi
         $request->validate([
             'cv' => 'required|mimes:pdf|max:2048',
             'job_post_id' => 'required|exists:job_posts,id'
         ]);
 
-        // PROTEKSI TAMBAHAN: Cek di database apakah user sudah pernah melamar di loker ini
         $existingApplication = Candidate::where('user_id', Auth::id())
             ->where('job_post_id', $request->job_post_id)
             ->first();
@@ -65,29 +64,44 @@ class CandidateController extends Controller
             return redirect()->route('candidates.index')->with('error', 'Kamu sudah melamar di lowongan ini!');
         }
 
-        // 2. Simpan File
-        $path = $request->file('cv')->store('cvs', 'public');
+        // --- MULAI PERUBAHAN UNTUK SUPABASE & VERCEL ---
 
-        // 3. Ambil Detail Lowongan (untuk dikirim ke AI)
+        // 2. Simpan File ke Supabase Storage
+        $file = $request->file('cv');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+
+        // Upload langsung ke bucket Supabase menggunakan disk 'supabase' yang sudah kita buat
+        $path = Storage::disk('supabase')->putFileAs('', $file, $fileName);
+
+        // 3. Ambil Detail Lowongan
         $job = JobPost::findOrFail($request->job_post_id);
 
-        // 4. Parse PDF
+        // 4. Parse PDF (Gunakan folder /tmp karena PDF Parser butuh akses file lokal di server)
+        $tempPath = '/tmp/' . $fileName;
+        file_put_contents($tempPath, file_get_contents($file->getRealPath()));
+
         $parser = new Parser();
-        $pdf = $parser->parseFile(storage_path('app/public/' . $path));
+        $pdf = $parser->parseFile($tempPath);
         $text = $pdf->getText();
 
-        // 5. Jalankan AI dengan menyertakan Required Skills dari database
-        // Kita kirim required_skills agar AI bisa membandingkan secara spesifik
+        // Hapus file sementara di /tmp setelah di-parse agar tidak memenuhi disk serverless
+        if (file_exists($tempPath)) {
+            unlink($tempPath);
+        }
+
+        // --- SELESAI PERUBAHAN ---
+
+        // 5. Jalankan AI
         $aiResult = $aiService->analyzeCV($text, $job->required_skills);
 
         // 6. Simpan ke Database
         Candidate::create([
-            'user_id'     => Auth::id(), // WAJIB: Simpan siapa yang login
-            'job_post_id' => $job->id, // HUBUNGAN KE LOWONGAN
+            'user_id'     => Auth::id(),
+            'job_post_id' => $job->id,
             'name'        => $aiResult['name'] ?? 'Unknown',
             'email'       => $aiResult['email'] ?? null,
             'phone'       => $aiResult['phone'] ?? null,
-            'cv_file'     => $path,
+            'cv_file'     => $path, // Ini sekarang menyimpan path di Supabase
             'skills'      => $aiResult['skills'] ?? [],
             'score'       => $aiResult['score'] ?? 0,
             'ai_summary'  => $aiResult['summary'] ?? null,
@@ -139,8 +153,9 @@ class CandidateController extends Controller
             return back()->with('error', 'Kamu tidak punya akses untuk melakukan ini.');
         }
 
-        if ($candidate->cv_file && Storage::disk('public')->exists($candidate->cv_file)) {
-            Storage::disk('public')->delete($candidate->cv_file);
+        // Hapus file dari disk Supabase
+        if ($candidate->cv_file && Storage::disk('supabase')->exists($candidate->cv_file)) {
+            Storage::disk('supabase')->delete($candidate->cv_file);
         }
 
         $candidate->delete();
