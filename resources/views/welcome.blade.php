@@ -101,7 +101,7 @@
                         </div>
 
                         <h4 class="text-xl md:text-2xl font-bold mb-3 text-white transition-colors">{{ $job->title }}</h4>
-                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light">{{ $job->description }}</p>
+                        <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light whitespace-pre-line">{{ $job->description }}</p>
                     </div>
                     <div
                         class="flex items-center gap-2 mb-6 text-slate-500 text-[10px] font-bold uppercase tracking-widest">

@@ -13,7 +13,7 @@
         <div class="flex flex-col items-center">
             <p class="text-slate-400 text-sm font-medium tracking-wide">
                 &copy; 2026 
-                <a href="https://linkedin.com/in/username-kamu" target="_blank" 
+                <a href="https://portfolio-laravel-shofialafarah.vercel.app" target="_blank" 
                    class="text-indigo-400 hover:text-indigo-300 transition-all duration-300 hover:underline decoration-indigo-500/30 underline-offset-4 font-bold">
                    Shofia Nabila Elfa Rahma
                 </a>
